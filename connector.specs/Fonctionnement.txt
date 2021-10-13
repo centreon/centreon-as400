@@ -1,0 +1,29 @@
+2 façons de lancer Centreon-Connector :
+- Mode daemon (écoute sur un port)
+- Mode ligne de commande
+
+Le mode daemon permet d'effectuer le meme type de requete qu'en ligne de commande, sans devoir démarrer une nouvelle JVM.
+
+------------------------------------
+Lancement en mode daemon
+------------------------------------
+java -jar centreon-connector.jar --daemon
+ou
+java -jar centreon-connector.jar -D 
+
+------------------------------------
+Lancement en ligne de commande
+------------------------------------
+java -jar centreon-connector.jar -[option principale] [options liés à l'option principale]
+
+Centreon-Connector a besoin d'une option principale pour déterminer le type de connecteur à utiliser. 
+
+Liste des options principales : 
+-J pour JMX
+-A pour AS400 (indisponible pour le moment)
+
+Exemple de lancement de Centreon-Connector sur une application java, avec JMX actif :
+
+java -jar centreon-connector.jar -J -H %HOST% -P %PORT% -l %LOGIN% -p %PASSWORD% -G "%MBEAN NAME%" -A "%ATTRIBUTE%"
+
+Les arguments apres l'option -J ne concernent que JMX.

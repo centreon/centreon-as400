@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- /!\ Warning : do no modify without necessary knowledge -->
+<configuration>
+	<!-- Argument separator -->
+	<property key="argSeparator" value="!"/>
+	
+	<!-- time before killiargSeparatorng a dead connection from nagios check (s) -->
+	<property key="daemonSoLinger" value="1"/>
+	<!-- time before killing a dead as400 connection (s) -->
+	<property key="as400SoLinger" value="1"/>
+	
+	<!-- socket read timeout for nagios check (ms) -->
+	<property key="daemonReadTimeout" value="5000"/>
+	
+	<!-- as400 read timeout for nagios check (ms) -->
+	<property key="as400ReadTimeout" value="600000"/>
+	<!-- as400 login timeout for nagios check (ms) -->
+	<property key="as400LoginTimeout" value="10000"/>
+	<!-- Time before cleaning an unused as400 resource (ms) -->
+	<property key="as400ResourceDuration" value="7200000"/>
+	<!-- Time before discaring a check in queue (ms) -->
+	<property key="workerQueueTimeout" value="60000"/>
+	<!-- Duration of the job & (ms) -->
+	<property key="cacheTimeout" value="60000"/>
+	<!-- Display full exception -->
+	<property key="showException" value="true" />
+	<!-- Display debug info -->
+	<property key="showDebug" value="true" />
+	<!-- Log trace -->
+	<property key="logTrace" value="false" />
+</configuration>

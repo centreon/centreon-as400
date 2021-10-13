@@ -1,0 +1,39 @@
+Considerer la valeur du SimpleType systematiquement comme un double.
+
+Option à gérer : 
+   -C (--connector)		Centreon-Connector host (host:port)
+   -H (--host)  		as400 host
+   -U (--username)   	as400 username
+   -P (--password)   	as400 password
+   -C (--check)			check name
+   -A (--args)   		generics arguments (optionnel)
+   -V (--version)    	Plugin version
+   -h (--help)       	usage help
+
+--------------------------------
+Exemple de ligne de commande
+--------------------------------
+
+./check_centreon_as400_generic --connector "192.168.1.10:4242" --as400 "192.168.2.20" --username "user" --password "password" -C "cpu" -A "80,90"
+
+Le plugin se connecte à Centreon-Connector 192.168.1.10:4242 et envoi la commande suivante :
+-I -H localhost --login "test" --password "test" -C "cpu" -A "80,90"
+
+Il reçoit en retour :
+<data>
+  <request returnCode="0" output="Processing unit used : 4.3%" metrics="processingunitused=4.3" />
+</data>
+
+ou eventuellement : 
+
+<data>
+    <request returnCode="0" output="Processing unit used : 4.3%" metrics="processingunitused=4.3;80;90;0;100">
+      <debug requestTimeMS="1281" />
+    </request>
+</data>
+
+Qu'il traite pour générer un output : 
+
+Processing unit used : 4.3% |processingunitused=4.3;80;90;0;100
+
+et 0 en code de retour, l'attribut ne dépassant pas les seuils ('label'=value[UOM];[warn];[crit];[min];[max]).

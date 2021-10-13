@@ -1,0 +1,186 @@
+#!/bin/sh
+#
+# Script init
+#
+
+### BEGIN INIT INFO
+# Provides:          connector-as400
+# Required-Start:    
+# Required-Stop:     
+# Default-Start:     3 5
+# Default-Stop:      0 1 6
+# Short-Description: Start daemon at boot time
+# Description:       Enable Centreon-Connector-AS400 at boot time
+### END INIT INFO
+
+### BEGIN INIT INFO Suse
+# Provides:       connector-as400
+# Required-Start:
+# Required-Stop:
+# Default-Start:  3 5
+# Default-Stop: 0 1 6
+# Description:    Start the Centreon-Connector-AS400 Daemon
+### END INIT INFO
+
+### BEGIN INIT INFO Redhat
+# chkconfig: - 71 31
+# description: Centreon-Connector-AS400
+# processname: connector-as400
+# config:
+# pidfile:
+### END INIT INFO
+
+status_connector()
+{
+    if test ! -f $connectorRunFile; then
+	echo "No lock file found in $connectorRunFile"
+	return 1
+    fi
+    connectorPID=`head -n 1 $connectorRunFile`
+    if ps -p $connectorPID; then
+	return 0
+    else
+	return 1
+    fi
+    return 1
+}
+
+killproc_connector()
+{
+    if test ! -f $connectorRunFile; then
+	echo "No lock file found in $connectorRunFile"
+	return 1
+    fi    
+    connectorPID=`head -n 1 $connectorRunFile`
+    kill -15 $connectorPID
+}
+
+# Create RunDir if not exit
+rundir_exist()
+{
+[ -e ${connectorRunDir} ] || \
+        install -d -o$connectorUser -m750 ${connectorRunDir}
+}
+
+# Source function library
+# Solaris doesn't have an rc.d directory, so do a test first
+
+if [ -f /etc/rc.d/init.d/functions ]; then
+    . /etc/rc.d/init.d/functions
+elif [ -f /etc/init.d/functions ]; then
+    . /etc/init.d/functions
+fi
+
+CONNECTOR_HOME=@CONNECTOR_HOME@
+CONNECTOR_ETC=@CONNECTOR_ETC@
+CONNECTOR_LOG=@CONNECTOR_LOG@
+CONNECTOR_USER=@CONNECTOR_USER@
+
+CONNECTOR_TMP=/tmp/
+connectorBin=${CONNECTOR_HOME}/bin/connector-as400-1.8.4-jar-with-dependencies.jar
+connectorRunDir=/var/run/
+connectorRunFile=${connectorRunDir}/connector-as400.pid
+connectorDemLog=${CONNECTOR_LOG}/connector-as400.out
+connectorLockDir=/var/lock/
+connectorLockFile=connector-as400
+
+NICE=5
+JAVA_BIN="@JAVA_BIN@"
+JAVA_EXEC="java"
+JAVA_OPTS="-Xms128M -Xmx2G -XX:MaxPermSize=128m -Djava.awt.headless=true"
+CONNECTOR_OPTS="--daemon 8091"
+
+ulimit -Hn 4096
+
+connectorLaunch="$JAVA_BIN $JAVA_OPTS -DCONNECTOR_HOME=$CONNECTOR_HOME -DCONNECTOR_ETC=$CONNECTOR_ETC -DCONNECTOR_LOG=$CONNECTOR_LOG -DCONNECTOR_TMP=$CONNECTOR_TMP -jar $connectorBin $CONNECTOR_OPTS"
+
+# Check that connector exists.
+if [ ! -f $connectorBin ]; then
+    echo "Executable file $connectorBin not found.  Exiting."
+    exit 1
+fi
+
+# Check that connector configuration file exists.
+if [ ! -f $connectorCfgFile ]; then
+    echo "Configuration file $connectorCfgFile not found.  Exiting."
+    exit 1
+fi
+           
+# See how we were called.
+case "$1" in
+    start)
+	# Check lock file
+    if test -f $connectorRunFile; then
+	echo "Error : $connectorRunFile already Exists."
+	NDconnectorRUNNING=`ps -edf | grep $connectorBin | grep -v grep | wc -l `
+	if [ $NDconnectorRUNNING = 0 ]
+	    then
+	    echo "But no connector process running"
+	    rm -f $connectorRunFile
+	    echo "Removing connector pid file"
+	else 
+	    exit 1
+	fi
+    fi
+    # Test if running directory exist.
+    rundir_exist
+    echo "Starting Centreon CONNECTOR"
+    su - $CONNECTOR_USER -c "$connectorLaunch >> $connectorDemLog 2>&1 &"
+     echo "Service started..."
+    if [ -d $connectorLockDir ]; then 
+    	touch $connectorLockDir/$connectorLockFile;
+    fi
+    if [ -d $connectorRunDir ]; then
+	PID=`ps -u $CONNECTOR_USER | grep $JAVA_EXEC | awk '{print \$1}'`
+	for i in `seq 15` ; do
+		if [ "$PID" = "" ]; then
+		    PID=`ps -u $CONNECTOR_USER | grep $JAVA_EXEC | awk '{print \$1}'`
+		    sleep 1
+		else
+			break;
+		fi
+	done
+	echo $PID > $connectorRunFile
+    fi
+    
+    exit 0
+    ;;
+    
+    stop)
+    echo "Stopping Centreon-Connector-AS400"
+    killproc_connector connector
+    echo -n 'Waiting for Centreon-Connector-AS400 to exit .'
+    for i in `seq 20` ; do
+	if status_connector > /dev/null; then
+	    echo -n '.'
+	    sleep 1
+	else
+	    break
+	fi
+    done
+    if status_connector > /dev/null; then
+	echo ''
+	echo 'Warning - running Centreon-Connector-AS400 did not exit in time'
+    else
+       rm -f $connectorLockDir/$connectorLockFile $connectorRunFile
+       echo ' done.'
+    fi
+    ;;
+    
+    status)
+    status_connector connector
+    ;;
+    
+    restart)
+    $0 stop
+    $0 start
+    ;;
+    
+    *)
+    echo "Usage: connector {start|stop|restart|status}"
+    exit 1
+    ;;
+    
+esac
+# End of this script
+
