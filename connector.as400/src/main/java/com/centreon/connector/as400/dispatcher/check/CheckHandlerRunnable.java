@@ -63,11 +63,7 @@ public class CheckHandlerRunnable implements Runnable {
         final long now = System.currentTimeMillis();
 
         try {
-            if (check.equalsIgnoreCase("cpuUsage")) {
-                data = this.checkCpu();
-            } else if (check.equalsIgnoreCase("asp1Usage")) {
-                data = this.checkASP1();
-            } else if (check.equalsIgnoreCase("listDisks")) {
+            if (check.equalsIgnoreCase("listDisks")) {
                 data = this.listDisks();
             } else if (check.equalsIgnoreCase("listSubsystems")) {
                 data = this.listSubsystems();
@@ -77,8 +73,8 @@ public class CheckHandlerRunnable implements Runnable {
                 data = this.getErrorMessageQueue();
             } else if (check.equalsIgnoreCase("pageFault")) {
                 data = this.checkPageFault();
-            } else if (check.equalsIgnoreCase("jobStats")) {
-                data = this.checkJobsStats();
+            } else if (check.equalsIgnoreCase("getSystem")) {
+                data = this.getSystem();
             } else if (check.equalsIgnoreCase("getJobQueues")) {
                 data = this.getJobQueues();
             } else if (check.equalsIgnoreCase("executeCommand")) {
@@ -136,18 +132,6 @@ public class CheckHandlerRunnable implements Runnable {
         return data;
     }
 
-    private ResponseData checkASP1() throws Exception {
-        final ResponseData data = this.checkDispatcher.getSystemHandler().getPercentASP1Usage();
-
-        return data;
-    }
-
-    private ResponseData checkCpu() throws Exception {
-        final ResponseData data = this.checkDispatcher.getSystemHandler().getPercentCpuUsage();
-
-        return data;
-    }
-
     private ResponseData listDisks() throws Exception {
         Object diskName = this.client.getAs400Arg("diskName");
 
@@ -184,8 +168,8 @@ public class CheckHandlerRunnable implements Runnable {
         return data;
     }
 
-    private ResponseData checkJobsStats() throws Exception {
-        final ResponseData data = this.checkDispatcher.getSystemHandler().getJobStats();
+    private ResponseData getSystem() throws Exception {
+        final ResponseData data = this.checkDispatcher.getSystemHandler().getSystem();
 
         return data;
     }

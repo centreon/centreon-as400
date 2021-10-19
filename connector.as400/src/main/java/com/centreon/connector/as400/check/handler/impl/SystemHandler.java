@@ -159,37 +159,12 @@ public class SystemHandler extends AbstractHandler implements ISystemHandler {
     }
 
     @Override
-    public ResponseData getPercentCpuUsage() throws AS400SecurityException, ErrorCompletingRequestException, InterruptedException, IOException,
-            ObjectDoesNotExistException {
+    public ResponseData getSystem() throws Exception {
         final ResponseData data = new ResponseData();
         HashMap<String, Object> attrs = new HashMap<String, Object>();
 
-        final float percentUsed = this.status.getPercentProcessingUnitUsed();
-        attrs.put("percentUsed", percentUsed);
-        data.getResult().add(attrs);
-
-        return data;
-    }
-
-    @Override
-    public ResponseData getPercentASP1Usage()
-            throws AS400SecurityException, ErrorCompletingRequestException, InterruptedException, IOException,
-            ObjectDoesNotExistException {
-        final ResponseData data = new ResponseData();
-        HashMap<String, Object> attrs = new HashMap<String, Object>();
-
-        final float percentUsed = this.status.getPercentSystemASPUsed();
-        attrs.put("percentUsed", percentUsed);
-        data.getResult().add(attrs);
-
-        return data;
-    }
-
-    @Override
-    public ResponseData getJobStats() throws Exception {
-        final ResponseData data = new ResponseData();
-        HashMap<String, Object> attrs = new HashMap<String, Object>();
-
+        attrs.put("percentProcessingUnitUsed", this.status.getPercentProcessingUnitUsed());
+        attrs.put("percentSystemASPUsed", this.status.getPercentSystemASPUsed());
         attrs.put("maxJobInSystem", this.status.getMaximumJobsInSystem());
         attrs.put("jobInSystem", this.status.getJobsInSystem());
         attrs.put("activeJobInSystem", this.status.getActiveJobsInSystem());

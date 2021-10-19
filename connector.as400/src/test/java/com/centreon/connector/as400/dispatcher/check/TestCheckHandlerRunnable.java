@@ -103,16 +103,6 @@ public class TestCheckHandlerRunnable extends CheckHandlerRunnable {
 	}
 
 	@Test
-	public void testCpuUsage() throws NumberFormatException, Exception {
-		this.testCommand("cpuUsage", ResponseData.statusOk);
-	}
-
-	@Test
-	public void testAsp1Usage() throws NumberFormatException, Exception {
-		this.testCommand("asp1Usage", ResponseData.statusOk);
-	}
-
-	@Test
 	public void testListDisks() throws NumberFormatException, Exception {
 		this.testCommand("listDisks", ResponseData.statusError);
 	}
@@ -135,11 +125,6 @@ public class TestCheckHandlerRunnable extends CheckHandlerRunnable {
 	@Test
 	public void testPageFault() throws NumberFormatException, Exception {
 		this.testCommand("pageFault", ResponseData.statusOk);
-	}
-
-	@Test
-	public void testJobStatsArgs() throws NumberFormatException, Exception {
-		this.testCommand("jobStats", ResponseData.statusOk);
 	}
 
 	@Test

@@ -31,11 +31,7 @@ public interface ISystemHandler {
 
     void dumpSystem() throws Exception;
 
-    ResponseData getPercentCpuUsage() throws Exception;
-
-    ResponseData getPercentASP1Usage() throws Exception;
-
     ResponseData getPageFault() throws Exception;
 
-    ResponseData getJobStats() throws Exception;
+    ResponseData getSystem() throws Exception;
 }
