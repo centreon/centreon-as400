@@ -109,6 +109,9 @@ public class MessageQueueHandler extends AbstractHandler implements IMessageQueu
                     attrs.put("text", message.getText());
                     attrs.put("severity", message.getSeverity());
                     attrs.put("date", message.getDate().getTimeInMillis());
+                    attrs.put("jobName", message.getFromJobName());
+                    attrs.put("jobNumber", message.getFromJobNumber());
+                    attrs.put("user", message.getUser());
                     data.getResult().add(attrs);
                 }
             }
