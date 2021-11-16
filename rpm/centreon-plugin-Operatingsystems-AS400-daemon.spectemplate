@@ -22,14 +22,14 @@ Centreon Connector Server for AS400
 
 find .     \
     -type f \
-    -exec %{__grep} -E '(@@CONNECTOR_HOME@@)|(@@CONNECTOR_ETC@@)|(@@CONNECTOR_LOG@@)|(@@CONNECTOR_USER@@)' {} ';'   \
+    -exec %{__grep} -E '(@CONNECTOR_VERSION@)|(@CONNECTOR_HOME@)|(@CONNECTOR_ETC@)|(@CONNECTOR_LOG@)|(@CONNECTOR_USER@)|(@JAVA_BIN@)' {} ';'   \
     -exec %{__sed} -i \
-    -e 's|@@CONNECTOR_VERSION@@|'"%{version}"'|g' \
-	-e 's|@@CONNECTOR_HOME@@|'"%{_datadir}/centreon-as400"'|g' \
-	-e 's|@@CONNECTOR_ETC@@|'"/etc/centreon-as400/"'|g' \
-	-e 's|@@CONNECTOR_LOG@@|'"/var/log/centreon-as400/"'|g' \
-	-e 's|@@CONNECTOR_USER@@|'"centreon-as400"'|g' \
-    -e 's|@@JAVA_BIN@@|'"/usr/bin/java"'|g' \
+    -e 's|@CONNECTOR_VERSION@|'"%{version}"'|g' \
+	-e 's|@CONNECTOR_HOME@|'"%{_datadir}/centreon-as400"'|g' \
+	-e 's|@CONNECTOR_ETC@|'"/etc/centreon-as400/"'|g' \
+	-e 's|@CONNECTOR_LOG@|'"/var/log/centreon-as400/"'|g' \
+	-e 's|@CONNECTOR_USER@|'"centreon-as400"'|g' \
+    -e 's|@JAVA_BIN@|'"/usr/bin/java"'|g' \
     {} ';'
 
 %build
@@ -39,16 +39,17 @@ mvn -f connector.as400/pom.xml clean install
 rm -rf %{buildroot}
 
 %{__install} -d %{buildroot}%{_datadir}/centreon-as400/bin
-%{__cp} connector.as400/target/centreon-as400-%{version}-jar-with-dependencies.jar $RPM_BUILD_ROOT%{_datadir}/centreon-as400/bin
+%{__cp} connector.as400/target/centreon-as400-%{version}-jar-with-dependencies.jar %{buildroot}%{_datadir}/centreon-as400/bin
 
+%{__install} -d -m 0755 %{buildroot}%{_sysconfdir}/systemd/system/
 %{__cp} connector.as400.install/init-script/centreon-as400.service %{buildroot}%{_sysconfdir}/systemd/system/
 
 %{__install} -d %{buildroot}%{_sysconfdir}/sysconfig
 %{__cp} connector.as400.install/init-script/centreon-as400-sysconfig %{buildroot}%{_sysconfdir}/sysconfig/centreon-as400
 
 %{__install} -d %{buildroot}%{_sysconfdir}/centreon-as400
-%{__cp} connector.as400.install/init-script/etc/config.properties %{buildroot}%{_sysconfdir}/centreon-as400
-%{__cp} connector.as400.install/init-script/etc/log4j.xml %{buildroot}%{_sysconfdir}/centreon-as400
+%{__cp} connector.as400.install/etc/config.properties %{buildroot}%{_sysconfdir}/centreon-as400
+%{__cp} connector.as400.install/etc/log4j.xml %{buildroot}%{_sysconfdir}/centreon-as400
 
 %clean
 rm -rf %{buildroot}

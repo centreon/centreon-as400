@@ -23,7 +23,7 @@
     </appender>
 
     <appender name="rollingsize" class="org.apache.log4j.RollingFileAppender">
-        <param name="File" value="${CONNECTOR_LOG}/centreon-as400" />
+        <param name="File" value="${CONNECTOR_LOG}/connector.log" />
         <param name="MaxFileSize" value="5MB" />
         <param name="MaxBackupIndex" value="10" />
 
