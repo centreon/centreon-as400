@@ -1,0 +1,74 @@
+
+Name:           centreon-plugin-Operatingsystems-AS400-daemon
+Version:        @VERSION@
+Release:        @RELEASE@%{?dist}
+Summary:        Centreon Daemon for AS400
+
+Group:          System Environment/Base
+License:        Apache2
+URL:            http://www.centreon.com
+Source0:        %{name}-%{version}.tar.gz
+Requires:		jre
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildArch:      noarch
+
+%description
+Centreon Connector Server for AS400
+
+%prep
+%setup -q -n %{name}-%{version}
+
+find .          \
+        -type f \
+        -exec %{__grep} -E '(@@CONNECTOR_HOME@@)|(@@CONNECTOR_ETC@@)|(@@CONNECTOR_LOG@@)|(@@CONNECTOR_USER@@)' {} ';'   \
+        -exec %{__sed} -i \
+	-e 's|@@CONNECTOR_HOME@@|'"%{_datadir}/centreon-as400"'|g' \
+	-e 's|@@CONNECTOR_ETC@@|'"/etc/centreon-as400/"'|g' \
+	-e 's|@@CONNECTOR_LOG@@|'"/var/log/centreon-as400/"'|g' \
+	-e 's|@@CONNECTOR_USER@@|'"centreon-as400"'|g' \
+        -e 's|@@JAVA_BIN@@|'"/usr/bin/java"'|g' \
+	{} ';'
+
+%install
+rm -rf %{buildroot}
+
+%{__install} -d %{buildroot}%{_datadir}/centreon-as400/bin
+%{__cp} -p bin/centreon-as400-%{version}-jar-with-dependencies.jar $RPM_BUILD_ROOT%{_datadir}/centreon-as400/bin
+
+%{__cp} connector.as400.install/init-script/centreon-as400.service %{buildroot}%{_sysconfdir}/systemd/system/
+
+%{__install} -d %{buildroot}%{_sysconfdir}/sysconfig
+%{__cp} connector.as400.install/init-script/centreon-as400-sysconfig %{buildroot}%{_sysconfdir}/sysconfig/centreon-as400
+
+%{__install} -d %{buildroot}%{_sysconfdir}/centreon-as400
+%{__cp} connector.as400.install/init-script/etc/config.properties %{buildroot}%{_sysconfdir}/centreon-as400
+%{__cp} connector.as400.install/init-script/etc/log4j.xml %{buildroot}%{_sysconfdir}/centreon-as400
+
+%clean
+rm -rf %{buildroot}
+
+%pre
+%{_sbindir}/useradd -m -r centreon-as400 -d %{_datadir}/centreon-as400  2> /dev/null || :
+
+%post
+mkdir -p /var/log/centreon-as400/
+chown centreon-as400:centreon-as400 /var/log/centreon-as400/
+
+#%postun
+#on upgrade, don't remove user
+#if [ "$1" = "0" ]; then
+#  %{_sbindir}/userdel centreon-connector-as400 2> /dev/null || :
+#fi
+
+%files
+%defattr(-,root,root,-)
+%doc
+%attr(-,centreon-as400,centreon-as400) %{_sysconfdir}/centreon-as400
+%attr(-,centreon-as400,centreon-as400) %{_datadir}/centreon-as400
+%config(noreplace) %{_sysconfdir}/sysconfig/centreon-as400
+%config(noreplace) %{_sysconfdir}/centreon-as400/config.properties
+%config(noreplace) %{_sysconfdir}/centreon-as400/log4j.xml
+
+%changelog
+* Tue Nov 16 2021 Quentin Garnier <qgarnier@centreon.com> - 2.0.0
+- Initial release

@@ -9,9 +9,7 @@
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[%-20d{dd/MM/yyyy HH:mm:ss}] [%-6p] %m %n" />
         </layout>
-
     </appender>
-
 
     <appender name="rollingdaily" class="org.apache.log4j.rolling.RollingFileAppender">
         <rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
@@ -25,7 +23,7 @@
     </appender>
 
     <appender name="rollingsize" class="org.apache.log4j.RollingFileAppender">
-        <param name="File" value="${CONNECTOR_LOG}/connector-as400" />
+        <param name="File" value="${CONNECTOR_LOG}/centreon-as400" />
         <param name="MaxFileSize" value="5MB" />
         <param name="MaxBackupIndex" value="10" />
 
