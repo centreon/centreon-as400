@@ -8,9 +8,11 @@ Group:          System Environment/Base
 License:        Apache2
 URL:            http://www.centreon.com
 Source0:        %{name}-%{version}.tar.gz
-Requires:		jre
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
+
+BuildRequires:  maven
+Requires:       java-1.8.0-openjdk
 
 %description
 Centreon Connector Server for AS400
@@ -18,22 +20,26 @@ Centreon Connector Server for AS400
 %prep
 %setup -q -n %{name}-%{version}
 
-find .          \
-        -type f \
-        -exec %{__grep} -E '(@@CONNECTOR_HOME@@)|(@@CONNECTOR_ETC@@)|(@@CONNECTOR_LOG@@)|(@@CONNECTOR_USER@@)' {} ';'   \
-        -exec %{__sed} -i \
+find .     \
+    -type f \
+    -exec %{__grep} -E '(@@CONNECTOR_HOME@@)|(@@CONNECTOR_ETC@@)|(@@CONNECTOR_LOG@@)|(@@CONNECTOR_USER@@)' {} ';'   \
+    -exec %{__sed} -i \
+    -e 's|@@CONNECTOR_VERSION@@|'"%{version}"'|g' \
 	-e 's|@@CONNECTOR_HOME@@|'"%{_datadir}/centreon-as400"'|g' \
 	-e 's|@@CONNECTOR_ETC@@|'"/etc/centreon-as400/"'|g' \
 	-e 's|@@CONNECTOR_LOG@@|'"/var/log/centreon-as400/"'|g' \
 	-e 's|@@CONNECTOR_USER@@|'"centreon-as400"'|g' \
-        -e 's|@@JAVA_BIN@@|'"/usr/bin/java"'|g' \
-	{} ';'
+    -e 's|@@JAVA_BIN@@|'"/usr/bin/java"'|g' \
+    {} ';'
+
+%build
+mvn -f connector.as400/pom.xml clean install
 
 %install
 rm -rf %{buildroot}
 
 %{__install} -d %{buildroot}%{_datadir}/centreon-as400/bin
-%{__cp} -p bin/centreon-as400-%{version}-jar-with-dependencies.jar $RPM_BUILD_ROOT%{_datadir}/centreon-as400/bin
+%{__cp} connector.as400/target/centreon-as400-%{version}-jar-with-dependencies.jar $RPM_BUILD_ROOT%{_datadir}/centreon-as400/bin
 
 %{__cp} connector.as400.install/init-script/centreon-as400.service %{buildroot}%{_sysconfdir}/systemd/system/
 
@@ -65,6 +71,7 @@ chown centreon-as400:centreon-as400 /var/log/centreon-as400/
 %doc
 %attr(-,centreon-as400,centreon-as400) %{_sysconfdir}/centreon-as400
 %attr(-,centreon-as400,centreon-as400) %{_datadir}/centreon-as400
+%attr(644, root, root) %{_sysconfdir}/systemd/system/centreon-as400.service
 %config(noreplace) %{_sysconfdir}/sysconfig/centreon-as400
 %config(noreplace) %{_sysconfdir}/centreon-as400/config.properties
 %config(noreplace) %{_sysconfdir}/centreon-as400/log4j.xml

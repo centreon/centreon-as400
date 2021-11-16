@@ -1,7 +1,5 @@
 #!/bin/bash
 
-cat `pwd`"/VERSION"
-
 #################################################
 ##Functions and vars for actions results printing
 #################################################
@@ -49,21 +47,24 @@ function echo_passed() {
 ##################
 
 INIT_FOLDER="init-script/"
-INIT_FILE="connector-as400"
+INIT_FILE="centreon-as400.service"
+SYSCONFIG_FILE="centreon-as400-sysconfig"
 
-CONNECTOR_HOME="/usr/share/centreon-connector-as400/"
-CONNECTOR_LOG="/var/log/centreon-connector-as400/"
-CONNECTOR_ETC="/etc/centreon-connector-as400/"
+CONNECTOR_VERSION=2.0.0
+CONNECTOR_HOME="/usr/share/centreon-as400/"
+CONNECTOR_LOG="/var/log/centreon-as400/"
+CONNECTOR_ETC="/etc/centreon-as400/"
 LOG_ETC_FILE="log4j.xml"
 
-CONNECTOR_USER="centreonConnectorAS400"
-CONNECTOR_GROUP="centreonConnectorAS400"
+CONNECTOR_USER="centreon-as400"
+CONNECTOR_GROUP="centreon-as400"
 
 JAVA_BIN=""
 
 ETC_PASSWD="/etc/passwd"
 ETC_GROUP="/etc/group"
-ETC_INITD="/etc/init.d/"
+ETC_INITD="/etc/systemd/system/"
+ETC_SYSCONFIG="/etc/sysconfig/"
 
 ######
 ##INIT
@@ -81,14 +82,14 @@ DONE="no"
 CREATE_HOME="no"
 temp_folder="$CONNECTOR_HOME"
 while [ "$DONE" = "no" ]; do
-	echo  "Centreon CONNECTOR home Directory [$CONNECTOR_HOME]? "
+	echo  "Centreon AS400 home Directory [$CONNECTOR_HOME]? "
 	echo -n ">"
 	read temp_folder
 	if [ -z "$temp_folder" ]; then
 		temp_folder="$CONNECTOR_HOME"
 	fi
 	temp_folder=`echo "$temp_folder" | sed "s/$/\//"`
-	
+
 	if [ -d "$temp_folder" ]; then
 		DONE="yes"
 	else
@@ -113,14 +114,15 @@ while [ "$DONE" = "no" ]; do
 	    fi
  	fi
 done
+temp_folder=$(echo $temp_folder | sed "s/\/\/$/\//")
 CONNECTOR_HOME=${temp_folder}
-echo_success "Centreon CONNECTOR home directory" "$CONNECTOR_HOME"
+echo_success "Centreon AS400 home directory" "$CONNECTOR_HOME"
 
 #############################
 ##Getting java home directory
 #############################
 
-JAVA_HOME="/usr/java/"
+JAVA_HOME="/usr/"
 temp=$JAVA_HOME
 while [ ! -x "$temp/bin/java" ]; do
     echo_failure "Cannot find java binary" "FAILURE"
@@ -139,22 +141,22 @@ echo_success "Java bin path :" "$JAVA_BIN"
 # CONNECTOR INIT SCRIPT
 ###################
 
-echo "Do you want to install CONNECTOR init script [y/N]?"
+echo "Do you want to install AS400 systemd script [y/N]?"
 echo -n ">"
 read response
 if [ -z "$response" ]; then
     response="N"
 fi
 while [ "$response" != "Y" ] && [ "$response" != "y" ] &&  [ "$response" != "N" ] && [ "$response" != "n" ]; do
-    echo "Do you want to install CONNECTOR init script [y/N]?"
+    echo "Do you want to install AS400 systemd script [y/N]?"
     echo -n ">"
     read response
     if [ -z "$response" ]; then
-	response="N"
+        response="N"
     fi
 done
 INSTALL_CONNECTOR_INIT=$response
-echo_success "CONNECTOR init script :" "$ETC_INITD/$INIT_FILE"
+echo_success "CONNECTOR systemd script :" "$ETC_INITD/$INIT_FILE"
 
 ########################
 ## Centreon BI user and Group
@@ -179,9 +181,14 @@ echo_success "Creating directories and moving binaries..." "OK"
 if [ ! -d "${CONNECTOR_HOME}" ]; then
      mkdir -p $CONNECTOR_HOME
 fi
- 
-cp -R bin/ ${CONNECTOR_HOME}
- 
+if [ ! -d "${CONNECTOR_HOME}/bin" ]; then
+    mkdir ${CONNECTOR_HOME}/bin
+fi
+
+if [ -d bin/ ] ; then
+    cp -f bin/*.jar ${CONNECTOR_HOME}/bin/
+fi
+
 if [ ! -d "${CONNECTOR_LOG}" ]; then
      mkdir -p ${CONNECTOR_LOG}
 fi
@@ -190,7 +197,8 @@ if [ ! -d "${CONNECTOR_ETC}" ]; then
 fi
 
 cp etc/log4j.xml ${CONNECTOR_ETC}
- 
+cp etc/config.properties ${CONNECTOR_ETC}
+
 ###################
 ##Macro replacement
 ###################
@@ -199,18 +207,18 @@ ETC_FILE=${CONNECTOR_ETC}${CONNECTOR_ETC_FILE}
 
 if [ "$INSTALL_CONNECTOR_INIT" = "y" ] || [ "$INSTALL_CONNECTOR_INIT" = "Y" ]; then
     echo_success "Copying CONNECTOR init script..." "OK"
-    if [ -x "$ETC_INITD/$INIT_FILE" ]; then
-		mv $ETC_INITD/$INIT_FILE $ETC_INITD/$INIT_FILE.bkp
-    fi
+    sed -e 's|@JAVA_BIN@|'"$JAVA_BIN"'|g' \
+        $INIT_FOLDER/$INIT_FILE > $ETC_INITD/$INIT_FILE
+    chmod 644 $ETC_INITD/$INIT_FILE
     sed -e 's|@CONNECTOR_HOME@|'"$CONNECTOR_HOME"'|g' \
-    -e 's|@JAVA_BIN@|'"$JAVA_BIN"'|g' \
-    -e 's|@CONNECTOR_USER@|'"$CONNECTOR_USER"'|g' \
-    -e 's|@CONNECTOR_ETC@|'"${CONNECTOR_ETC}"'|g' \
-    -e 's|@CONNECTOR_LOG@|'"${CONNECTOR_LOG}"'|g' \
-    $INIT_FOLDER/$INIT_FILE > $ETC_INITD/$INIT_FILE
-    chmod +x $ETC_INITD/$INIT_FILE
+        -e 's|@JAVA_BIN@|'"$JAVA_BIN"'|g' \
+        -e 's|@CONNECTOR_USER@|'"$CONNECTOR_USER"'|g' \
+        -e 's|@CONNECTOR_ETC@|'"${CONNECTOR_ETC}"'|g' \
+        -e 's|@CONNECTOR_LOG@|'"${CONNECTOR_LOG}"'|g' \
+        -e 's|@CONNECTOR_VERSION@|'"${CONNECTOR_VERSION}"'|g' \
+        $INIT_FOLDER/$SYSCONFIG_FILE > $ETC_SYSCONFIG/centreon-as400
 fi
-echo_success "Deploying Centreon-Connector..." "OK"
+echo_success "Deploying Centreon-AS400..." "OK"
 
 ###################################################
 ##Rights settings on install directory and binaries
@@ -223,19 +231,7 @@ chmod -R 775 $CONNECTOR_HOME
 
 echo_success "Rights settings..." "OK"
 
-
-COMMAND=`whereis -b update-rc.d | sed -e 's|^update-rc:||'`
-if [ ! -z "$COMMAND" ]; then
-	echo_success "Creating daemon connector" "OK"
-	update-rc.d connector  start 20 3 5 . stop 20 0 1 6 .
-fi
-COMMAND=`whereis -b chkconfig | sed -e 's|^chkconfig:||'`
-if [ ! -z "$COMMAND" ]; then
-	echo_success "Creating daemon Connector" "OK"
-	chkconfig --add connector
-	chkconfig --level 345 connector on
-fi
-#$ETC_INITD/$INIT_FILE restart
+systemctl enable $INIT_FILE
 
 #########
 # THE END
@@ -244,11 +240,4 @@ fi
 echo ""
 $SETCOLOR_WARNING
 echo "Setup finished."
-echo ""
-$SETCOLOR_FAILURE
-echo "Compile and manually copy plugins to %nagios%/libexec/"
-$SETCOLOR_NORMAL
-echo "Use : cmake ./plugins"
-echo "Use : cd ./plugins"
-echo "Use : make"
 echo ""
