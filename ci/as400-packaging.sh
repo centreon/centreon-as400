@@ -11,7 +11,7 @@ if [ -z "$VERSION" -o -z "$RELEASE" ] ; then
 fi
 
 if [ ! -d /root/rpmbuild/SOURCES ] ; then
-  mkdir -p /root/rpmbuild/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
+  sudo mkdir -p /root/rpmbuild/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
 fi
 
 tar czf centreon-plugin-Operatingsystems-AS400-daemon-2.0.0.tar.gz centreon-as400 
