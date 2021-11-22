@@ -11,17 +11,17 @@ pipeline {
           packagingcentos7: {
             echo "Packaging AS400 CENTOS7"
             sh 'docker run -i --entrypoint /src/ci/as400-packaging.sh -v "$PWD:/src" -e VERSION=2.0.0 -e RELEASE=1 registry.centreon.com/as400:centos7'        
-            sh 'rpmsign --addsign *.rpm'
+            sh 'rpmsign --addsign noarch/*.rpm'
             stash name: 'el7-rpms', includes: 'noarch/*.rpm'
-            archiveArtifacts artifacts: "*.rpm"
+            archiveArtifacts artifacts: "noarch/*.rpm"
             sh 'rm -rf *.rpm'
           },
           packagingcentos8: {
             echo "Packaging AS400 CENTOS8"
             sh 'docker run -i --entrypoint /src/ci/as400-packaging.sh -v "$PWD:/src" -e VERSION=2.0.0 -e RELEASE=1 registry.centreon.com/as400:centos8'        
-            sh 'rpmsign --addsign *.rpm'
+            sh 'rpmsign --addsign noarch/*.rpm'
             stash name: 'el8-rpms', includes: 'noarch/*.rpm'
-            archiveArtifacts artifacts: "*.rpm"
+            archiveArtifacts artifacts: "noarch/*.rpm"
             sh 'rm -rf *.rpm'
           }
         )
