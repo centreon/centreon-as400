@@ -18,4 +18,4 @@ cp centreon-plugin-Operatingsystems-AS400-daemon-2.0.0.tar.gz /root/rpmbuild/SOU
 rpmbuild -ba rpm/centreon-plugin-Operatingsystems-AS400-daemon.spectemplate -D "VERSION $VERSION" -D "RELEASE $RELEASE"
 cp -r /root/rpmbuild/RPMS/noarch .
 chmod 777 noarch/*.rpm
-chown -R ubuntu: noarch
+chown -R admin: noarch
