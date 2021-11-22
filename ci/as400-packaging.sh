@@ -10,7 +10,7 @@ if [ -z "$VERSION" -o -z "$RELEASE" ] ; then
   exit 1
 fi
 sudo rm -rf /$HOME/rpmbuild
-
+sudo apt-get install -y maven
 if [ ! -d /$HOME/rpmbuild/SOURCES ] ; then
   sudo mkdir -p /$HOME/rpmbuild/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
 fi
