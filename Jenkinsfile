@@ -8,7 +8,7 @@ pipeline {
             echo "BUILD AS400"
             sh 'docker run -i --entrypoint /src/ci/as400-build.sh -v "$PWD:/src" as400:centos7'
           },
-          packaging-centos7: {
+          packagingcentos7: {
             echo "Packaging AS400 CENTOS7"
             sh 'docker run -i --entrypoint /src/ci/as400-packaging.sh -v "$PWD:/src" -e VERSION=2.0.0 -e RELEASE=1 as400:centos7'        
             sh 'rpmsign --addsign *.rpm'
@@ -16,7 +16,7 @@ pipeline {
             archiveArtifacts artifacts: "*.rpm"
             sh 'rm -rf *.rpm'
           },
-          packaging-centos8: {
+          packagingcentos8: {
             echo "Packaging AS400 CENTOS8"
             sh 'docker run -i --entrypoint /src/ci/as400-packaging.sh -v "$PWD:/src" -e VERSION=2.0.0 -e RELEASE=1 as400:centos8'        
             sh 'rpmsign --addsign *.rpm'
