@@ -1,6 +1,5 @@
 #!/bin/bash
 
 set -e
-ls -lart
-cd centreon.as400
+cd connector.as400
 mvn clean package
