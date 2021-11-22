@@ -17,5 +17,5 @@ if [ ! -d /ubuntu/rpmbuild/SOURCES ] ; then
 fi
 
 sudo tar czf centreon-plugin-Operatingsystems-AS400-daemon-2.0.0.tar.gz connector.as400 connector.as400.install doc rpm changelog LICENSE
-sudo mv centreon-plugin-Operatingsystems-AS400-daemon-2.0.0.tar.gz /root/rpmbuild/SOURCES
+sudo mv centreon-plugin-Operatingsystems-AS400-daemon-2.0.0.tar.gz /ubuntu/rpmbuild/SOURCES
 sudo rpmbuild -ba rpm/centreon-plugin-Operatingsystems-AS400-daemon.spectemplate -D "VERSION $VERSION" -D "RELEASE $RELEASE"
