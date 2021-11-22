@@ -14,7 +14,7 @@ sudo apt-get install -y maven
 if [ ! -d /$HOME/rpmbuild/SOURCES ] ; then
   sudo mkdir -p /$HOME/rpmbuild/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
 fi
-sudo maven --version
+sudo su
 sudo tar czf centreon-plugin-Operatingsystems-AS400-daemon-2.0.0.tar.gz connector.as400 connector.as400.install doc rpm changelog LICENSE
 sudo mv centreon-plugin-Operatingsystems-AS400-daemon-2.0.0.tar.gz /$HOME/rpmbuild/SOURCES
 sudo rpmbuild -ba rpm/centreon-plugin-Operatingsystems-AS400-daemon.spectemplate -D "VERSION $VERSION" -D "RELEASE $RELEASE"
