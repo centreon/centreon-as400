@@ -9,7 +9,7 @@ if [ -z "$VERSION" -o -z "$RELEASE" ] ; then
   echo "You need to specify VERSION / RELEASE variables"
   exit 1
 fi
-
+apt-get install maven
 sudo rm -rf /$HOME/rpmbuild
 
 if [ ! -d /$HOME/rpmbuild/SOURCES ] ; then
