@@ -1,7 +1,7 @@
 
 Name:           centreon-plugin-Operatingsystems-AS400-daemon
-Version:        @VERSION@
-Release:        @RELEASE@%{?dist}
+Version:        %{VERSION}
+Release:        %{RELEASE}%{?dist}
 Summary:        Centreon Daemon for AS400
 
 Group:          System Environment/Base
