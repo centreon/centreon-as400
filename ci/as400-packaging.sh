@@ -10,6 +10,8 @@ if [ -z "$VERSION" -o -z "$RELEASE" ] ; then
   exit 1
 fi
 
+sudo rm -rf /root/rpmbuild
+
 if [ ! -d /root/rpmbuild/SOURCES ] ; then
   sudo mkdir -p /root/rpmbuild/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
 fi
