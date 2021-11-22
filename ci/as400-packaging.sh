@@ -2,6 +2,9 @@
 
 set -e
 
+VERSION=$1
+RELEASE=$2
+
 if [ -z "$VERSION" -o -z "$RELEASE" ] ; then
   echo "You need to specify VERSION / RELEASE variables"
   exit 1
