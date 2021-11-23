@@ -10,8 +10,8 @@ pipeline {
           },
           packagingcentos7: {
             echo "Packaging AS400 CENTOS7"
-            sh "export ${env.BUILD_NUMBER}"
-            sh 'docker run -i --entrypoint /src/ci/as400-packaging.sh -v "$PWD:/src" -e RELEASE=${env.BUILD_NUMBER} registry.centreon.com/as400:centos7'        
+            sh "export BUILD_NUMBER=${env.BUILD_NUMBER}"
+            sh 'docker run -i --entrypoint /src/ci/as400-packaging.sh -v "$PWD:/src" -e RELEASE=$BUILD_NUMBER registry.centreon.com/as400:centos7'        
             sh 'rpmsign --addsign noarch/*.rpm'
             stash name: 'el7-rpms', includes: 'noarch/*.rpm'
             archiveArtifacts artifacts: "noarch/*.rpm"
