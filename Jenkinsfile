@@ -14,7 +14,7 @@ pipeline {
           agent { label 'aws' }
           steps {
             echo "Packaging AS400 CENTOS7"
-            sh "docker run -i --entrypoint /src/ci/as400-packaging.sh -v $PWD:/src -e RELEASE=${env.BUILD_NUMBER} registry.centreon.com/as400:centos7"        
+            sh """docker run -i --entrypoint /src/ci/as400-packaging.sh -v "$PWD:/src" -e RELEASE=${env.BUILD_NUMBER} registry.centreon.com/as400:centos7"""        
             sh 'rpmsign --addsign noarch/*.rpm'
             stash name: 'el7-rpms', includes: 'noarch/*.rpm'
             archiveArtifacts artifacts: "noarch/*.rpm"
