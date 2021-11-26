@@ -25,10 +25,13 @@ pipeline {
           }
         }
         stage('Packaging AS400 for centos8') {
+          environment {
+            BUILD_NUMBER = "${env.BUILD_NUMBER}"
+          }
           agent { label 'aws' }
           steps {
             echo "Packaging AS400 CENTOS8"
-            sh "docker run -i --entrypoint /src/ci/as400-packaging.sh -v $PWD:/src -e RELEASE=${env.BUILD_NUMBER} registry.centreon.com/as400:centos8"     
+            sh '''docker run -i --entrypoint /src/ci/as400-packaging.sh -v $PWD:/src -e RELEASE=$BUILD_NUMBER registry.centreon.com/as400:centos8'''     
             sh 'rpmsign --addsign noarch/*.rpm'
             stash name: 'el8-rpms', includes: 'noarch/*.rpm'
             archiveArtifacts artifacts: "noarch/*.rpm"
