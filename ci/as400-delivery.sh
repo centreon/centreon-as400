@@ -11,5 +11,5 @@ AS400RPMSEL8=`echo noarch/*.el8.*.rpm`
 
 # Publish RPMs
 
-put_rpms "standard" "$MAJOR" "el7" "testing" "noarch" "as400" "centreon-as400-$VERSION-$BUILD_NUMBER" $AS400RPMSEL7
-put_rpms "standard" "$MAJOR" "el8" "testing" "noarch" "as400" "centreon-as400-$VERSION-$BUILD_NUMBER" $AS400RPMSEL8
+put_rpms "standard" "21.10" "el7" "testing" "noarch" "as400" "centreon-as400-$VERSION-$BUILD_NUMBER" $AS400RPMSEL7
+put_rpms "standard" "21.10" "el8" "testing" "noarch" "as400" "centreon-as400-$VERSION-$BUILD_NUMBER" $AS400RPMSEL8
