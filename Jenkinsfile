@@ -32,7 +32,7 @@ pipeline {
             archiveArtifacts artifacts: "noarch/*.rpm"
             sh 'rm -rf *.rpm'
           }
-        )
+        }
       }
     }
   }
