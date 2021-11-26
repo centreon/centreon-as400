@@ -30,7 +30,7 @@ pipeline {
             sh 'sudo rpmsign --addsign noarch/*.rpm'
             stash name: 'el7-rpms', includes: 'noarch/*.rpm'
             archiveArtifacts artifacts: "noarch/*.rpm"
-            sh 'rm -rf noarch'
+            sh 'sudo rm -rf noarch'
           }
         }
         stage('Packaging AS400 for centos8') {
@@ -44,7 +44,7 @@ pipeline {
             sh 'sudo rpmsign --addsign noarch/*.rpm'
             stash name: 'el8-rpms', includes: 'noarch/*.rpm'
             archiveArtifacts artifacts: "noarch/*.rpm"
-            sh 'rm -rf noarch'
+            sh 'sudo rm -rf noarch'
           }
         }
       }
