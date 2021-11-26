@@ -12,7 +12,7 @@ pipeline {
             sh 'docker run -i --entrypoint /src/ci/as400-build.sh -v "$PWD:/src" registry.centreon.com/as400:centos7'
           }
         }
-        stage('Building AS400') {
+        stage('Testing AS400') {
           agent { label 'aws' }
           steps {
             echo "BUILD AS400"
