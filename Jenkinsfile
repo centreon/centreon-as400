@@ -43,18 +43,16 @@ pipeline {
       }
     }
     stage('RPM Delivery') {
-      stage('RPM AS400 delivery') {
-        environment {
-          BUILD_NUMBER = "${env.BUILD_NUMBER}"
-        }
-        agent { label 'aws' }
-        steps {
-          echo "Deliver RPMs AS400"
-          unstash 'el7-rpms'
-          unstash 'el8-rpms'
-          loadCommonScripts()
-          sh 'ci/release/as400-delivery.sh'
-        }
+      environment {
+        BUILD_NUMBER = "${env.BUILD_NUMBER}"
+      }
+      agent { label 'aws' }
+      steps {
+        echo "Deliver RPMs AS400"
+        unstash 'el7-rpms'
+        unstash 'el8-rpms'
+        loadCommonScripts()
+        sh 'ci/release/as400-delivery.sh'
       }
     }
   }
