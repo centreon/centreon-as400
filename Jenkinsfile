@@ -30,7 +30,7 @@ pipeline {
             sh 'sudo rpmsign --addsign noarch/*.rpm'
             stash name: 'el7-rpms', includes: 'noarch/*.rpm'
             archiveArtifacts artifacts: "noarch/*.rpm"
-            sh 'rm -rf *.rpm'
+            sh 'rm -rf noarch'
           }
         }
         stage('Packaging AS400 for centos8') {
@@ -44,12 +44,12 @@ pipeline {
             sh 'sudo rpmsign --addsign noarch/*.rpm'
             stash name: 'el8-rpms', includes: 'noarch/*.rpm'
             archiveArtifacts artifacts: "noarch/*.rpm"
-            sh 'rm -rf *.rpm'
+            sh 'rm -rf noarch'
           }
         }
       }
     }
-    stage('RPM Delivery') {
+    stage('RPM Delivery to testing repos') {
       environment {
         BUILD_NUMBER = "${env.BUILD_NUMBER}"
       }
@@ -59,7 +59,21 @@ pipeline {
         unstash 'el7-rpms'
         unstash 'el8-rpms'
         loadCommonScripts()
-        sh 'ci/as400-delivery.sh'
+        sh 'ci/as400-delivery.sh testing'
+      }
+    }
+    stage('RPM Delivery') {
+      when { branch 'master' }       
+      environment {
+        BUILD_NUMBER = "${env.BUILD_NUMBER}"
+      }
+      agent { label 'aws' }
+      steps {
+        echo "Deliver RPMs AS400"
+        unstash 'el7-rpms'
+        unstash 'el8-rpms'
+        loadCommonScripts()
+        sh 'ci/as400-delivery.sh stable'
       }
     }
   }
