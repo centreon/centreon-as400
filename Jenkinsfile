@@ -52,7 +52,7 @@ pipeline {
         unstash 'el7-rpms'
         unstash 'el8-rpms'
         loadCommonScripts()
-        sh 'ci/release/as400-delivery.sh'
+        sh 'ci/as400-delivery.sh'
       }
     }
   }
