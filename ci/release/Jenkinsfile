@@ -1,0 +1,20 @@
+pipeline {
+  agent { label 'aws' } 
+  stages {
+    stage('RPM Delivery') {
+      stage('RPM AS400 delivery') {
+        agent { label 'aws' }
+        steps {
+          echo "Deliver RPMs AS400"
+          unstash 'el7-rpms'
+          unstash 'el8-rpms'
+          sh 'docker run -i --entrypoint /src/ci/release/as400-release.sh -v "$PWD:/src" registry.centreon.com/as400:centos7'
+        }
+      }
+    }
+    post { 
+    always { 
+      cleanWs()
+    }
+  }
+}
