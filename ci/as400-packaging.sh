@@ -3,9 +3,7 @@
 set -e
 
 VERSION=`grep '<version>.*</version>' connector.as400/pom.xml | cut -d '>' -f 2 | cut -d '<' -f 1 | head -n1`
-RELEASE=$BUILD_NUMBER 
-echo $VERSION
-echo $RELEASE
+
 if [ -z "$VERSION" -o -z "$RELEASE" ] ; then
   echo "You need to specify VERSION / RELEASE variables"
   exit 1
