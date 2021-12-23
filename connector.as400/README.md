@@ -13,8 +13,12 @@
       -DCONNECTOR_HOME=target/test-classes/ \
       -DCONNECTOR_LOG=target/test-classes/ \
       -DCONNECTOR_TMP=target/test-classes/ \
-      -jar target/connector-as400-1.8.4-jar-with-dependencies.jar \
-      -I -H localhost -l LOGIN -p PASSWORD -A '80!90' -C cpuUsage
+      -jar target/centreon-as400-2.0.0-jar-with-dependencies.jar \
+      --port 8091
+
+### Test
+
+    curl -X POST -d '{"host": "test-as400", "login": "myuser", "password": "mypass", "command": "test" }' http://127.0.0.1:8091
 
 ## References
 

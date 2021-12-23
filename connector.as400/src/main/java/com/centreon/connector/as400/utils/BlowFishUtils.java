@@ -26,12 +26,9 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.centreon.connector.as400.ConnectorLogger;
 
 public final class BlowFishUtils {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BlowFishUtils.class);
 
     private static final String BLOWFISH = "Blowfish"; //$NON-NLS-1$
     private static final String TRANSFORMATION = "Blowfish/CBC/PKCS5Padding"; //$NON-NLS-1$
@@ -46,7 +43,7 @@ public final class BlowFishUtils {
             final byte[] buffer = HexUtils.hexToBuffer(cryptedMessage);
             return new String(BlowFishUtils.decrypt(buffer, BlowFishUtils.KEY), StringUtils.CHARSET);
         } catch (final Exception e) {
-            BlowFishUtils.LOGGER.error("", e);
+            ConnectorLogger.getInstance().error("", e);
             return StringUtils.EMPTY_STRING;
         }
     }
@@ -59,7 +56,7 @@ public final class BlowFishUtils {
             final byte[] crypted = BlowFishUtils.encrypt(message.getBytes(StringUtils.CHARSET), BlowFishUtils.KEY);
             return HexUtils.bufferToHex(crypted);
         } catch (final Exception e) {
-            BlowFishUtils.LOGGER.error("", e);
+            ConnectorLogger.getInstance().error("", e);
             return StringUtils.EMPTY_STRING;
         }
     }
