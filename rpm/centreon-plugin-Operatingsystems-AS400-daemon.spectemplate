@@ -49,7 +49,7 @@ rm -rf %{buildroot}
 
 %{__install} -d %{buildroot}%{_sysconfdir}/centreon-as400
 %{__cp} connector.as400.install/etc/config.properties %{buildroot}%{_sysconfdir}/centreon-as400
-%{__cp} connector.as400.install/etc/log4j.xml %{buildroot}%{_sysconfdir}/centreon-as400
+%{__cp} connector.as400.install/etc/log4j2.xml %{buildroot}%{_sysconfdir}/centreon-as400
 
 %clean
 rm -rf %{buildroot}
@@ -75,8 +75,11 @@ chown centreon-as400:centreon-as400 /var/log/centreon-as400/
 %attr(644, root, root) %{_sysconfdir}/systemd/system/centreon-as400.service
 %config(noreplace) %{_sysconfdir}/sysconfig/centreon-as400
 %config(noreplace) %{_sysconfdir}/centreon-as400/config.properties
-%config(noreplace) %{_sysconfdir}/centreon-as400/log4j.xml
+%config(noreplace) %{_sysconfdir}/centreon-as400/log4j2.xml
 
 %changelog
+* Thu Dec 23 2021 Quentin Garnier <qgarnier@centreon.com> - 2.0.1
+- Update log4j to version 2.17
+
 * Tue Nov 16 2021 Quentin Garnier <qgarnier@centreon.com> - 2.0.0
 - Initial release
