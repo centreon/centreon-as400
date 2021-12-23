@@ -20,8 +20,10 @@
 
 package com.centreon.connector.as400;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
+import java.io.File;
 
 /**
  * @author Lamotte Jean-Baptiste
@@ -41,11 +43,13 @@ public class ConnectorLogger {
 
     private ConnectorLogger(String etcDir) {
         if ((etcDir != null) && (etcDir.length() > 0)) {
-            DOMConfigurator.configure(etcDir + "log4j.xml");
+            LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
+            File file = new File(etcDir + "log4j2.xml");
+            context.setConfigLocation(file.toURI());
         } else {
             // DOMConfigurator.configure("log4j.xml");
         }
-        this.logger = Logger.getRootLogger();
+        this.logger = LogManager.getRootLogger();
     }
 
     public synchronized void debug(final String log) {

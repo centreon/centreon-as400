@@ -48,13 +48,13 @@ class Main {
     }
 
     private static void checkProperties() {
-        etcDir = System.getProperty(Main.CONNECTOR_ETC, "/etc/centreon-connector-as400/");
-        String logDir = System.getProperty(Main.CONNECTOR_LOG, "/var/log/centreon-connector-as400/");
+        etcDir = System.getProperty(Main.CONNECTOR_ETC, "/etc/centreon-as400/");
+        String logDir = System.getProperty(Main.CONNECTOR_LOG, "/var/log/centreon-as400/");
 
         try {
-            final File file = new File(etcDir + "log4j.xml");
+            final File file = new File(etcDir + "log4j2.xml");
             if (!file.exists()) {
-                ConnectorLogger.getInstance().fatal(etcDir + "log4j.xml doesnt exist. Engine stopped");
+                ConnectorLogger.getInstance().fatal(etcDir + "log4j2.xml doesnt exist. Engine stopped");
                 System.exit(0);
             }
 

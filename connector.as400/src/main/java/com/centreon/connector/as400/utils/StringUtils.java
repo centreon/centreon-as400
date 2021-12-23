@@ -22,12 +22,9 @@ package com.centreon.connector.as400.utils;
 
 import java.nio.charset.Charset;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.centreon.connector.as400.ConnectorLogger;
 
 public final class StringUtils {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(StringUtils.class);
 
     public static final Charset CHARSET = Charset.forName("UTF-8"); //$NON-NLS-1$
 
@@ -76,7 +73,7 @@ public final class StringUtils {
         try {
             return Double.parseDouble(input);
         } catch (final Exception e) {
-            StringUtils.LOGGER.info("", e);
+            ConnectorLogger.getInstance().error("", e);
             return errorValue;
         }
     }
@@ -92,7 +89,7 @@ public final class StringUtils {
         try {
             return Integer.parseInt(input);
         } catch (final Exception e) {
-            StringUtils.LOGGER.info("", e);
+            ConnectorLogger.getInstance().error("", e);
             return errorValue;
         }
     }
@@ -108,7 +105,7 @@ public final class StringUtils {
         try {
             return Long.parseLong(input);
         } catch (final Exception e) {
-            StringUtils.LOGGER.info("", e);
+            ConnectorLogger.getInstance().error("", e);
             return errorValue;
         }
     }
