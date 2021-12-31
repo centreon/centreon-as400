@@ -79,7 +79,7 @@ chown centreon-as400:centreon-as400 /var/log/centreon-as400/
 
 %changelog
 * Thu Dec 23 2021 Quentin Garnier <qgarnier@centreon.com> - 2.0.1
-- Update log4j to version 2.17
+- Update log4j to version 2.17.1
 
 * Tue Nov 16 2021 Quentin Garnier <qgarnier@centreon.com> - 2.0.0
 - Initial release
