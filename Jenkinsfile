@@ -1,7 +1,7 @@
 @Library("centreon-shared-library") _
 
 pipeline {
-  agent { label 'aws' } 
+  agent { label 'ec2-fleet' } 
   stages {
     stage('AS400 BUILD AND PACKAGING') {
       parallel {
@@ -13,7 +13,7 @@ pipeline {
           }
         }
         stage('Testing AS400') {
-          agent { label 'aws' }
+          agent { label 'ec2-fleet' }
           steps {
             echo "BUILD AS400"
             sh 'docker run -i --entrypoint /src/ci/as400-test.sh -v "$PWD:/src" registry.centreon.com/as400:centos7'
@@ -23,7 +23,7 @@ pipeline {
           environment {
             BUILD_NUMBER = "${env.BUILD_NUMBER}"
           }
-          agent { label 'aws' }
+          agent { label 'ec2-fleet' }
           steps {
             echo "Packaging AS400 CENTOS7"
             sh '''docker run -i --entrypoint /src/ci/as400-packaging.sh -v "$PWD:/src" -e RELEASE=$BUILD_NUMBER registry.centreon.com/as400:centos7'''  
@@ -37,7 +37,7 @@ pipeline {
           environment {
             BUILD_NUMBER = "${env.BUILD_NUMBER}"
           }
-          agent { label 'aws' }
+          agent { label 'ec2-fleet' }
           steps {
             echo "Packaging AS400 CENTOS8"
             sh '''docker run -i --entrypoint /src/ci/as400-packaging.sh -v $PWD:/src -e RELEASE=$BUILD_NUMBER registry.centreon.com/as400:centos8'''     
@@ -53,7 +53,7 @@ pipeline {
       environment {
         BUILD_NUMBER = "${env.BUILD_NUMBER}"
       }
-      agent { label 'aws' }
+      agent { label 'ec2-fleet' }
       steps {
         echo "Deliver RPMs AS400"
         unstash 'el7-rpms'
@@ -67,7 +67,7 @@ pipeline {
       environment {
         BUILD_NUMBER = "${env.BUILD_NUMBER}"
       }
-      agent { label 'aws' }
+      agent { label 'ec2-fleet' }
       steps {
         echo "Deliver RPMs AS400"
         unstash 'el7-rpms'
