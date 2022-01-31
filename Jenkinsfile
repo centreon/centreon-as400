@@ -33,7 +33,7 @@ pipeline {
             sh 'sudo rm -rf noarch'
           }
         }
-        stage('Packaging AS400 for centos8') {
+        /*stage('Packaging AS400 for centos8') {
           environment {
             BUILD_NUMBER = "${env.BUILD_NUMBER}"
           }
@@ -46,7 +46,7 @@ pipeline {
             archiveArtifacts artifacts: "noarch/*.rpm"
             sh 'sudo rm -rf noarch'
           }
-        }
+        }*/
       }
     }
     stage('RPM Delivery to testing repos') {
@@ -57,7 +57,7 @@ pipeline {
       steps {
         echo "Deliver RPMs AS400"
         unstash 'el7-rpms'
-        unstash 'el8-rpms'
+        //unstash 'el8-rpms'
         loadCommonScripts()
         sh 'ci/as400-delivery.sh testing'
       }
@@ -71,7 +71,7 @@ pipeline {
       steps {
         echo "Deliver RPMs AS400"
         unstash 'el7-rpms'
-        unstash 'el8-rpms'
+        //unstash 'el8-rpms'
         loadCommonScripts()
         sh 'ci/as400-delivery.sh stable'
       }
