@@ -21,9 +21,13 @@ pipeline {
         }
         stage('sonarQube') {
           agent { label 'ec2-fleet' }
-          steps {
-            echo "ANALYZE AS400"
-            sh 'docker run -i --entrypoint /src/ci/as400-analysis.sh -v "$PWD:/src" registry.centreon.com/as400:centos7'
+            steps {
+              echo "ANALYZE AS400"
+              dir('centreon-collect') {
+                checkout scm
+              }
+              sh 'docker run --entrypoint /src/ci/as400-analysis.sh --rm  -u $(id -u):$(id -g) -e SONAR_HOST_URL="https://sonarqube.centreon.com" -i -v "$PWD:/src" sonarsource/sonar-scanner-cli:latest sonar-scanner'
+            }
           }
         }
         stage('Packaging AS400 for centos7') {
