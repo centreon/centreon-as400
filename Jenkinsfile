@@ -26,7 +26,7 @@ pipeline {
             dir('centreon-collect') {
                 checkout scm
             }
-            sh 'docker run -i sonarsource/sonar-scanner-cli:latest -v "$PWD:/src" -w /src --entrypoint sonar-scanner --rm -u $(id -u):$(id -g)'
+            sh 'docker run -i sonarsource/sonar-scanner-cli:latest -v "$PWD:/src" -w=/src --entrypoint sonar-scanner --rm -u $(id -u):$(id -g)'
           }
         }
         stage('Packaging AS400 for centos7') {
