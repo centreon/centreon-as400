@@ -26,7 +26,7 @@ pipeline {
             dir('centreon-collect') {
                 checkout scm
             }
-            sh 'docker run -w=/src --entrypoint sonar-scanner --rm  -u $(id -u):$(id -g) -e SONAR_HOST_URL="https://sonarqube.centreon.com" -i -v "$PWD:/src" sonarsource/sonar-scanner-cli:latest'
+            sh 'docker run -i sonarsource/sonar-scanner-cli:latest -v "$PWD:/src" -w /src --entrypoint sonar-scanner --rm -u $(id -u):$(id -g)'
           }
         }
         stage('Packaging AS400 for centos7') {
