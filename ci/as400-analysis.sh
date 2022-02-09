@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# $1 is the sonar.login token
+
 set -e
 
 # This job is run directly after mon-web-unittest on centos7.
@@ -10,4 +12,4 @@ if [ -z "$VERSION" ] ; then
   exit 1
 fi
 
-sonar-scanner -Dsonar.projectVersion="$VERSION"
+sonar-scanner -Dsonar.projectVersion="$VERSION" -Dsonar.login="$1"
