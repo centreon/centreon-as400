@@ -29,15 +29,6 @@ pipeline {
             withSonarQubeEnv('SonarQubeDev') {
               sh 'docker run -i -v "$PWD:/src" -w="/src" --entrypoint ci/as400-analysis.sh --rm -u $(id -u):$(id -g) sonarsource/sonar-scanner-cli:latest "$SONAR_AUTH_TOKEN" "$SONAR_HOST_URL"'
             }
-            timeout(time: 10, unit: 'MINUTES') {
-              def qualityGate = waitForQualityGate()
-              if (qualityGate.status != 'OK') {
-                error "Pipeline aborted due to quality gate failure: ${qualityGate.status}"
-              }
-            }
-            if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-              error("Quality gate failure: ${qualityGate.status}.");
-            }
           }
         }
         stage('Packaging AS400 for centos7') {
