@@ -28,7 +28,7 @@ pipeline {
             }
             withSonarQubeEnv('SonarQubeDev') {
               sh 'env'
-              sh 'docker run -i -v "$PWD:/src" -w="/src" --entrypoint ci/as400-analysis.sh --rm -u $(id -u):$(id -g) sonarsource/sonar-scanner-cli:latest "$SONAR_AUTH_TOKEN"'
+              sh 'docker run -i -v "$PWD:/src" -w="/src" --entrypoint ci/as400-analysis.sh --rm -u $(id -u):$(id -g) sonarsource/sonar-scanner-cli:latest "$SONAR_AUTH_TOKEN" "$SONAR_HOST_URL"'
             }
           }
         }
