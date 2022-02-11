@@ -15,8 +15,17 @@ pipeline {
         stage('Testing AS400') {
           agent { label 'ec2-fleet' }
           steps {
-            echo "BUILD AS400"
+            echo "TEST AS400"
             sh 'docker run -i --entrypoint /src/ci/as400-test.sh -v "$PWD:/src" registry.centreon.com/as400:centos7'
+          }
+        }
+        stage('sonarQube') {
+          agent { label 'ec2-fleet' }
+          steps {
+            echo "ANALYZE AS400"
+            withSonarQubeEnv('SonarQubeDev') {
+              sh 'docker run -i -v "$PWD:/src" -w="/src" --entrypoint ci/as400-analysis.sh --rm -u $(id -u):$(id -g) sonarsource/sonar-scanner-cli:latest "$SONAR_AUTH_TOKEN" "$SONAR_HOST_URL"'
+            }
           }
         }
         stage('Packaging AS400 for centos7') {
