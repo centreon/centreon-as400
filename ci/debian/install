@@ -1,0 +1,5 @@
+connector.as400/target/centreon-as400-2.0.2-jar-with-dependencies.jar   usr/share/centreon-as400/bin
+connector.as400.install/init-script/centreon-as400.service              lib/systemd/system
+connector.as400.install/init-script/centreon-as400-sysconfig            etc/sysconfig
+connector.as400.install/etc/config.properties                           etc/centreon-as400
+connector.as400.install/etc/log4j2.xml                                  etc/centreon-as400

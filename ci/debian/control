@@ -1,0 +1,17 @@
+Source: centreon-plugin-Operatingsystems-AS400-daemon
+Section: net
+Priority: optional
+Maintainer: Luiz Costa <me@luizgustavo.pro.br>
+Build-Depends:
+  debhelper-compat (=12),
+  lsb-base,
+  default-jre,
+  maven
+Standards-Version: 4.5.0
+Homepage: https://wwww.centreon.com
+
+Package: centreon-plugin-Operatingsystems-AS400-daemon
+Architecture: any
+Depends:
+  default-jre
+Description: Centreon Connector Server for AS400

@@ -1,0 +1,20 @@
+#!/bin/sh
+
+if [ "$1" = "configure" ] ; then
+
+    if [ ! "$(getent passwd centreon-as400)" ]; then
+        useradd -m -r centreon-as400 -d /usr/share/centreon-as400 2> /dev/null || :
+        chown -R centreon-as400:centreon-as400 \
+            /var/log/centreon-as400 \
+            /etc/centreon-as400 \
+            /usr/share/centreon-as400
+    fi
+
+    mv /etc/sysconfig/centreon-as400-sysconfig /etc/sysconfig/centreon-as400
+
+    # Enable service
+    systemctl enable centreon-as400
+
+fi
+
+exit 0
