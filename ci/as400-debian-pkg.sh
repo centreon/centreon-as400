@@ -24,13 +24,13 @@ cd /build
 # fix version to debian format accept
 VERSION="$(echo $VERSION | sed 's/-/./g')"
 
-cp -rv /src/ /build/
-mv -v /build/src /build/centreon-plugin-operatingsystems-as400-daemon-$VERSION
-(cd /build && tar czvpf - centreon-plugin-operatingsystems-as400-daemon-$VERSION) | dd of=centreon-plugin-operatingsystems-as400-daemon-$VERSION.tar.gz
-cp -rv /build/centreon-plugin-operatingsystems-as400-daemon-$VERSION/ci/debian /build/centreon-plugin-operatingsystems-as400-daemon-$VERSION/
+mkdir -p /build/centreon-plugin-operatingsystems-as400-daemon
+cp -rv /src/* /build/centreon-plugin-operatingsystems-as400-daemon
+(cd /build && tar czvpf - centreon-plugin-operatingsystems-as400-daemon) | dd of=centreon-plugin-operatingsystems-as400-daemon-$VERSION.tar.gz
+cp -rv /build/centreon-plugin-operatingsystems-as400-daemon/ci/debian /build/centreon-plugin-operatingsystems-as400-daemon/
 
 ls -lart
-cd /build/centreon-plugin-operatingsystems-as400-daemon-$VERSION
+cd /build/centreon-plugin-operatingsystems-as400-daemon
 debmake -f "${AUTHOR}" -e "${AUTHOR_EMAIL}" -u "$VERSION" -y -r "$DISTRIB"
 debuild-pbuilder
 cd /build
