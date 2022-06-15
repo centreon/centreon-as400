@@ -24,8 +24,8 @@ cd /build
 # fix version to debian format accept
 VERSION="$(echo $VERSION | sed 's/-/./g')"
 
-cp -rv /src/centreon-as400 /build/
-mv -v /build/centreon-as400 /build/centreon-plugin-Operatingsystems-AS400-daemon
+cp -rv /src/ /build/
+mv -v /build/ /build/centreon-plugin-Operatingsystems-AS400-daemon
 (cd /build && tar czvpf - centreon-plugin-Operatingsystems-AS400-daemon) | dd of=centreon-plugin-Operatingsystems-AS400-daemon-$VERSION.tar.gz
 cp -rv /src/centreon-as400/ci/debian /build/centreon-plugin-Operatingsystems-AS400-daemon/
 
