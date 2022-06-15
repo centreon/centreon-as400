@@ -98,6 +98,26 @@ pipeline {
       }
     }
     stage('DEB Delivery') {
+      environment {
+        BUILD_NUMBER = "${env.BUILD_NUMBER}"
+        REPO = "unstable"
+      }
+      agent { label 'ec2-fleet' }
+      steps {
+        echo "Deliver RPMs AS400"
+        unstash 'Debian11'
+        withCredentials([usernamePassword(credentialsId: 'nexus-credentials', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
+          checkout scm
+          unstash "Debian11"
+          sh '''for i in $(echo *.deb)
+                do 
+                  curl -u $NEXUS_USERNAME:$NEXUS_PASSWORD -H "Content-Type: multipart/form-data" --data-binary "@./$i" https://apt.centreon.com/repository/22.04-$REPO/
+                done
+             '''    
+        }
+      }
+    }
+    stage('DEB Delivery') {
       when { branch 'master' }       
       environment {
         BUILD_NUMBER = "${env.BUILD_NUMBER}"
