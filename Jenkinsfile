@@ -104,7 +104,7 @@ pipeline {
       }
       agent { label 'ec2-fleet' }
       steps {
-        echo "Deliver RPMs AS400"
+        echo "Deliver DEBS AS400"
         unstash 'Debian11'
         withCredentials([usernamePassword(credentialsId: 'nexus-credentials', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
           checkout scm
@@ -117,7 +117,7 @@ pipeline {
         }
       }
     }
-    stage('DEB Delivery') {
+    stage('DEB Delivery to production') {
       when { branch 'master' }       
       environment {
         BUILD_NUMBER = "${env.BUILD_NUMBER}"
@@ -125,7 +125,7 @@ pipeline {
       }
       agent { label 'ec2-fleet' }
       steps {
-        echo "Deliver RPMs AS400"
+        echo "Deliver DEBs AS400"
         unstash 'Debian11'
         withCredentials([usernamePassword(credentialsId: 'nexus-credentials', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
           checkout scm
