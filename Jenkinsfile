@@ -42,6 +42,18 @@ pipeline {
             sh 'sudo rm -rf noarch'
           }
         }
+        stage('Packaging AS400 for Debian Bullseye') {
+          environment {
+            BUILD_NUMBER = "${env.BUILD_NUMBER}"
+          }
+          agent { label 'ec2-fleet' }
+          steps {
+            echo "Packaging AS400 DEBIAN BULLSEYE"
+            sh '''docker run -i --entrypoint /src/ci/as400-debian-pkg.sh -v "$PWD:/src" -e RELEASE=$BUILD_NUMBER registry.centreon.com/debian:bullseye'''  
+            stash name: 'Debian11', includes: '*.rpm'
+            archiveArtifacts artifacts: "*.rpm"
+          }
+        }
         stage('Packaging AS400 for centos8') {
           environment {
             BUILD_NUMBER = "${env.BUILD_NUMBER}"
