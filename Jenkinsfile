@@ -49,7 +49,7 @@ pipeline {
           agent { label 'ec2-fleet' }
           steps {
             echo "Packaging AS400 DEBIAN BULLSEYE"
-            sh '''docker run -i --entrypoint /src/ci/as400-debian-pkg.sh -w="/src" -v "$PWD:/src" -e DISTRIB=bullseye -e RELEASE=$BUILD_NUMBER debian:bullseye'''  
+            sh '''docker run -i --entrypoint /src/ci/as400-debian-pkg.sh -w="/src" -v "$PWD:/src" -e DISTRIB=bullseye -e RELEASE=$BUILD_NUMBER registry.centreon.com/centreon-debian11-dependencies:22.10'''  
             stash name: 'Debian11', includes: '*.rpm'
             archiveArtifacts artifacts: "*.rpm"
           }
