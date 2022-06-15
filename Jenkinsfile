@@ -42,6 +42,18 @@ pipeline {
             sh 'sudo rm -rf noarch'
           }
         }
+        stage('Packaging AS400 for Debian Bullseye') {
+          environment {
+            BUILD_NUMBER = "${env.BUILD_NUMBER}"
+          }
+          agent { label 'ec2-fleet' }
+          steps {
+            echo "Packaging AS400 DEBIAN BULLSEYE"
+            sh '''docker run -i --entrypoint /src/ci/as400-debian-pkg.sh -w="/src" -v "$PWD:/src" -e DISTRIB=bullseye -e RELEASE=$BUILD_NUMBER registry.centreon.com/centreon-debian11-dependencies:22.10'''  
+            stash name: 'Debian11', includes: '*.deb'
+            archiveArtifacts artifacts: "*.deb"
+          }
+        }
         stage('Packaging AS400 for centos8') {
           environment {
             BUILD_NUMBER = "${env.BUILD_NUMBER}"
@@ -83,6 +95,27 @@ pipeline {
         unstash 'el8-rpms'
         loadCommonScripts()
         sh 'ci/as400-delivery.sh stable'
+      }
+    }
+    stage('DEB Delivery') {
+      when { branch 'master' }       
+      environment {
+        BUILD_NUMBER = "${env.BUILD_NUMBER}"
+        REPO = "testing"
+      }
+      agent { label 'ec2-fleet' }
+      steps {
+        echo "Deliver RPMs AS400"
+        unstash 'Debian11'
+        withCredentials([usernamePassword(credentialsId: 'nexus-credentials', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
+          checkout scm
+          unstash "Debian11"
+          sh '''for i in $(echo *.deb)
+                do 
+                  curl -u $NEXUS_USERNAME:$NEXUS_PASSWORD -H "Content-Type: multipart/form-data" --data-binary "@./$i" https://apt.centreon.com/repository/22.04-$REPO/
+                done
+             '''    
+        }
       }
     }
   }

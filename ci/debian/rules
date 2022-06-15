@@ -1,0 +1,25 @@
+#!/usr/bin/make -f
+
+export DH_VERBOSE=1
+
+%:
+	dh $@
+
+override_dh_gencontrol:
+	dh_gencontrol -- -Tdebian/substvars
+
+override_dh_clean:
+
+override_dh_auto_build:
+	find .     \
+		-type f \
+		-exec grep -E '(@CONNECTOR_VERSION@)|(@CONNECTOR_HOME@)|(@CONNECTOR_ETC@)|(@CONNECTOR_LOG@)|(@CONNECTOR_USER@)|(@JAVA_BIN@)' {} ';'   \
+		-exec sed -i \
+		-e 's|@CONNECTOR_VERSION@|'"2.0.2"'|g' \
+		-e 's|@CONNECTOR_HOME@|'"/usr/share/centreon-as400"'|g' \
+		-e 's|@CONNECTOR_ETC@|'"/etc/centreon-as400/"'|g' \
+		-e 's|@CONNECTOR_LOG@|'"/var/log/centreon-as400/"'|g' \
+		-e 's|@CONNECTOR_USER@|'"centreon-as400"'|g' \
+		-e 's|@JAVA_BIN@|'"/usr/bin/java"'|g' \
+		{} ';'
+	mvn -f connector.as400/pom.xml clean install
