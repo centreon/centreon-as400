@@ -1,6 +1,8 @@
 #!/bin/sh
 set -ex
 
+VERSION=`grep '<version>.*</version>' connector.as400/pom.xml | cut -d '>' -f 2 | cut -d '<' -f 1 | head -n1`
+
 if [ -z "$VERSION" -o -z "$RELEASE" -o -z "$DISTRIB" ] ; then
   echo "You need to specify VERSION / RELEASE / DISTRIB variables"
   exit 1
