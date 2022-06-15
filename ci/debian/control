@@ -1,4 +1,4 @@
-Source: centreon-plugin-Operatingsystems-AS400-daemon
+Source: centreon-plugin-operatingsystems-as400-daemon
 Section: net
 Priority: optional
 Maintainer: Luiz Costa <me@luizgustavo.pro.br>
@@ -10,7 +10,7 @@ Build-Depends:
 Standards-Version: 4.5.0
 Homepage: https://wwww.centreon.com
 
-Package: centreon-plugin-Operatingsystems-AS400-daemon
+Package: centreon-plugin-operatingsystems-as400-daemon
 Architecture: any
 Depends:
   default-jre
